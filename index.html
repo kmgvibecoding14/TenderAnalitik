@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ТендерАналитик — PRD</title>
+<style>
+:root{
+  --bg:#f6f7fb;--surface:#fff;--surface2:#eef1f8;--text:#1b2233;--muted:#5d6784;--line:#dde2ef;
+  --accent:#3b5bdb;--accent-soft:#e3e9ff;--ok:#2b8a3e;--ok-soft:#e1f5e6;--warn:#e67700;--warn-soft:#fff0d9;--bad:#c92a2a;--bad-soft:#fde4e4;
+  --shadow:0 1px 3px rgba(20,30,60,.08),0 6px 20px rgba(20,30,60,.05);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1320;--surface:#171c2e;--surface2:#1e2540;--text:#e8ebf5;--muted:#9aa3c0;--line:#2a3252;
+  --accent:#7c9bff;--accent-soft:#242e57;--ok:#69db7c;--ok-soft:#173424;--warn:#ffa94d;--warn-soft:#3a2a12;--bad:#ff8787;--bad-soft:#3d1c1f;--shadow:none;}}
+:root[data-theme="dark"]{
+  --bg:#0f1320;--surface:#171c2e;--surface2:#1e2540;--text:#e8ebf5;--muted:#9aa3c0;--line:#2a3252;
+  --accent:#7c9bff;--accent-soft:#242e57;--ok:#69db7c;--ok-soft:#173424;--warn:#ffa94d;--warn-soft:#3a2a12;--bad:#ff8787;--bad-soft:#3d1c1f;--shadow:none;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+header.top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:12px;height:54px}
+.brand{font-weight:700;white-space:nowrap}
+nav{display:flex;gap:4px;overflow-x:auto;flex:1;scrollbar-width:none}
+nav a{padding:6px 10px;border-radius:8px;text-decoration:none;color:var(--muted);font-size:14px;white-space:nowrap}
+nav a:hover{background:var(--surface2);color:var(--text)}
+button.theme{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:14px}
+.hero{padding:56px 0 32px}
+.hero h1{font-size:clamp(30px,5vw,48px);line-height:1.1;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{font-size:18px;color:var(--muted);max-width:720px;margin:0 0 20px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--accent-soft);color:var(--accent);border-radius:99px;padding:4px 12px;font-size:13px;font-weight:600}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+section{padding:36px 0}
+section>.wrap>h2{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+.lead{color:var(--muted);margin:0 0 22px;max-width:760px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 6px;font-size:16px}
+.card p{margin:0;color:var(--muted);font-size:14.5px}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--accent-soft);color:var(--accent);margin-bottom:8px}
+.tag.bad{background:var(--bad-soft);color:var(--bad)}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.kpi{text-align:center}
+.kpi b{display:block;font-size:34px;color:var(--accent);line-height:1.1}
+.kpi span{color:var(--muted);font-size:13.5px}
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;counter-reset:s}
+.flow .step{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+.flow .step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:14px;margin-bottom:8px}
+.flow .step h3{margin:0 0 4px;font-size:15px}.flow .step p{margin:0;font-size:13.5px;color:var(--muted)}
+/* pipeline */
+.pipe{display:flex;flex-direction:column;gap:10px}
+.pipe .row{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.pipe .n{width:36px;height:36px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700}
+.pipe h3{margin:0;font-size:15px}.pipe p{margin:2px 0 0;font-size:13.5px;color:var(--muted)}
+@media(max-width:560px){.pipe .row{grid-template-columns:44px 1fr}.pipe .row .tag{grid-column:2;justify-self:start}}
+/* tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tabs button{border:1px solid var(--line);background:var(--surface);color:var(--text);padding:7px 12px;border-radius:99px;cursor:pointer;font-size:14px}
+.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+.panel h3{margin:0 0 6px}.panel p{margin:0 0 8px;color:var(--muted)}
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--surface2);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.diff{background:var(--warn-soft);color:var(--warn);font-weight:600}
+td.same{color:var(--ok)}
+/* arch */
+.arch{display:grid;gap:10px}
+.arch .layer{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:stretch}
+.arch .lbl{background:var(--accent);color:#fff;border-radius:12px;padding:12px;font-weight:700;font-size:14px;display:grid;place-items:center;text-align:center}
+.arch .items{display:flex;flex-wrap:wrap;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px}
+.arch .items span{background:var(--surface2);border-radius:8px;padding:6px 10px;font-size:13.5px}
+@media(max-width:560px){.arch .layer{grid-template-columns:1fr}}
+.arrow{text-align:center;color:var(--muted);line-height:1}
+/* duplicates algo */
+.algo{display:grid;gap:10px;counter-reset:a}
+.algo li{list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px 10px 50px;position:relative;font-size:14.5px}
+.algo li::before{counter-increment:a;content:counter(a);position:absolute;left:12px;top:9px;width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:13px}
+ul.algo{padding:0;margin:0}
+/* meter */
+.meter{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden;margin:8px 0 4px;position:relative}
+.meter i{display:block;height:100%;background:var(--accent)}
+.jac{display:grid;gap:12px}
+.jac .card b{color:var(--accent)}
+/* roadmap */
+.road{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.road ul{margin:0;padding-left:18px;font-size:14.5px}
+.road li{margin:5px 0}
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:8px}
+details summary{cursor:pointer;font-weight:600}
+details p{margin:8px 0 0;color:var(--muted);font-size:14.5px}
+footer{padding:36px 0 60px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);margin-top:24px}
+code{background:var(--surface2);padding:1px 6px;border-radius:6px;font-size:.9em}
+.risk{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:700px){.risk{grid-template-columns:1fr}}
+.search{width:100%;max-width:360px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);font-size:14px;margin-bottom:10px}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="brand">📑 ТендерАналитик</div>
+  <nav>
+    <a href="#goal">Цель</a><a href="#req">Требования</a><a href="#flow">Сценарий</a><a href="#pipeline">Анализ</a>
+    <a href="#results">Результаты</a><a href="#tz">Проект ТЗ</a><a href="#arch">Архитектура</a><a href="#risks">Риски</a><a href="#accept">Приёмка</a><a href="#road">Roadmap</a><a href="#gloss">Глоссарий</a>
+  </nav>
+  <button class="theme" id="theme" aria-label="Сменить тему">🌓</button>
+</div></header>
+
+<main>
+<div class="wrap hero">
+  <div class="chips" style="margin-bottom:14px"><span class="chip">PRD v1.0</span><span class="chip ok">MVP реализован</span><span class="chip">Одностраничное веб-приложение</span></div>
+  <h1>ТендерАналитик</h1>
+  <p>Приложение для разработки технических спецификаций по закупкам: сравнивает ТЗ разных заказчиков, находит общее, различия, нарушения, разночтения и дубли — и собирает единое выверенное ТЗ.</p>
+  <div class="grid g4" style="margin-top:24px">
+    <div class="card kpi"><b>10+</b><span>документов за один анализ</span></div>
+    <div class="card kpi"><b>12</b><span>поддерживаемых форматов</span></div>
+    <div class="card kpi"><b>5</b><span>шагов конвейера анализа</span></div>
+    <div class="card kpi"><b>8</b><span>вкладок результатов</span></div>
+  </div>
+</div>
+
+<section id="goal"><div class="wrap">
+  <h2>Цель и контекст</h2>
+  <p class="lead">Ручное сравнение 10+ ТЗ в разных форматах занимает много времени и ведёт к ошибкам.</p>
+  <div class="grid g3">
+    <div class="card"><span class="tag bad">Проблема</span><p>Нужно вручную сравнивать ТЗ других заказчиков, искать общие условия и расхождения, проверять соответствие законам и стандартам, находить противоречия и дубли.</p></div>
+    <div class="card"><span class="tag ok">Цель</span><p>Автоматизировать анализ набора ТЗ и формировать проект единого, юридически выверенного технического задания.</p></div>
+    <div class="card"><span class="tag">Пользователи</span><p>Контрактные службы и отделы закупок, тендерные менеджеры и аналитики, юристы, разработчики спецификаций.</p></div>
+  </div>
+  <div class="card" style="margin-top:14px"><span class="tag warn">Вне продукта</span><p>Юридическое заключение (результаты рекомендательные) · OCR сканов · хранение между сессиями · интеграция с электронными торговыми площадками.</p></div>
+</div></section>
+
+<section id="req"><div class="wrap">
+  <h2>Исходные требования заказчика</h2>
+  <p class="lead">Семь требований R1–R7 и вкладки, которые их закрывают.</p>
+  <div class="tw"><table>
+    <tr><th>№</th><th>Требование</th><th>Где реализовано</th></tr>
+    <tr><td>R1</td><td>Приложение для разработки технических спецификаций по закупкам товаров, работ и услуг</td><td>Проект ТЗ</td></tr>
+    <tr><td>R2</td><td>Анализ ≥10 файлов разных форматов от разных заказчиков</td><td>Загрузка файлов</td></tr>
+    <tr><td>R3</td><td>Показ одинаковых условий и требований</td><td>Общие условия, Матрица</td></tr>
+    <tr><td>R4</td><td>Анализ и показ отличий</td><td>Различия, Матрица</td></tr>
+    <tr><td>R5</td><td>Нарушения нормативных актов, регламентов, стандартов</td><td>Нарушения, Нормы и стандарты</td></tr>
+    <tr><td>R6</td><td>Показ и анализ разночтений</td><td>Разночтения</td></tr>
+    <tr><td>R7</td><td>Показ и анализ дублирований</td><td>Дубли и повторы</td></tr>
+  </table></div>
+</div></section>
+
+<section id="flow"><div class="wrap">
+  <h2>Пользовательский сценарий</h2>
+  <p class="lead">От загрузки файлов до готового ТЗ за шесть шагов.</p>
+  <div class="flow">
+    <div class="step"><h3>Файлы</h3><p>Загрузить 10+ документов, поправить названия заказчиков.</p></div>
+    <div class="step"><h3>Параметры</h3><p>Юрисдикция, вид закупки, предмет, свои нормы и пожелания.</p></div>
+    <div class="step"><h3>Анализ</h3><p>Полный (локально + ИИ) или только локальные проверки.</p></div>
+    <div class="step"><h3>Результаты</h3><p>Сводка, общие условия, различия, матрица, нарушения, дубли.</p></div>
+    <div class="step"><h3>Проект ТЗ</h3><p>Генерация, правка, проверка, экспорт в .docx / .md.</p></div>
+    <div class="step"><h3>Отчёты</h3><p>Отчёт .html и матрица сравнения .csv.</p></div>
+  </div>
+
+  <h3 style="margin:28px 0 10px">Загрузка и параметры</h3>
+  <div class="grid g2">
+    <div class="card">
+      <h3>Файлы (F-1…F-7)</h3>
+      <p>До 40 файлов, до 30 МБ каждый; drag-and-drop. Автоопределение кодировки (UTF-8 → windows-1251). Понятные ошибки для .doc и сканов. Демо-набор из 10 условных ТЗ.</p>
+      <div class="chips" style="margin-top:10px">
+        <span class="chip">PDF</span><span class="chip">DOCX</span><span class="chip">XLSX/XLS/XLSM/ODS</span><span class="chip">PPTX</span><span class="chip">TXT/MD</span><span class="chip">CSV/TSV</span><span class="chip">JSON</span><span class="chip">HTML/XML</span><span class="chip">LOG</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Параметры (P-1…P-6)</h3>
+      <p><b>Юрисдикции:</b> РФ (44-ФЗ / 223-ФЗ / 135-ФЗ), Казахстан, Беларусь, Узбекистан, Кыргызстан, другая.<br><b>Вид закупки:</b> товары, работы, услуги, смешанная.<br><b>Строгость:</b> стандартная / повышенная.<br>Предмет, заказчик, доп. акты и пожелания к ТЗ.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="pipeline"><div class="wrap">
+  <h2>Конвейер анализа</h2>
+  <p class="lead">Пять шагов с индикатором прогресса и кнопкой остановки. Ошибка одного шага не останавливает остальные.</p>
+  <div class="pipe">
+    <div class="row"><div class="n">1</div><div><h3>Локальные проверки</h3><p>Дубли, нормативные ссылки, автосигналы</p></div><span class="tag ok">В браузере</span></div>
+    <div class="row"><div class="n">2</div><div><h3>Извлечение</h3><p>Категория, тема, значение, цитата, нормы, внутренние проблемы — по документам, 2 параллельных запроса</p></div><span class="tag">ИИ</span></div>
+    <div class="row"><div class="n">3</div><div><h3>Сопоставление</h3><p>Группировка по темам: общее / различие / уникальное</p></div><span class="tag">ИИ</span></div>
+    <div class="row"><div class="n">4</div><div><h3>Разночтения и дубли</h3><p>Расхождения формулировок, неоднозначности, смысловые повторы</p></div><span class="tag">ИИ</span></div>
+    <div class="row"><div class="n">5</div><div><h3>Нарушения</h3><p>Проверка по нормативной базе юрисдикции, пакетами по размеру</p></div><span class="tag">ИИ</span></div>
+  </div>
+
+  <h3 style="margin:28px 0 10px">Категории требований</h3>
+  <div class="chips">
+    <span class="chip">Предмет и объём</span><span class="chip">Тех. характеристики</span><span class="chip">Качество и стандарты</span><span class="chip">Сроки</span><span class="chip">Место и условия поставки</span><span class="chip">Гарантия и сервис</span><span class="chip">Приёмка</span><span class="chip">Оплата и цена</span><span class="chip">Обеспечение</span><span class="chip">Ответственность и штрафы</span><span class="chip">Квалификация участника</span><span class="chip">Документы в заявке</span><span class="chip">Критерии оценки</span><span class="chip">Прочее</span>
+  </div>
+
+  <h3 style="margin:28px 0 10px">Автоматические сигналы (без ИИ)</h3>
+  <div class="grid g3">
+    <div class="card"><span class="tag bad">Бренд</span><p>Товарный знак без формулировки «или эквивалент»</p></div>
+    <div class="card"><span class="tag warn">Опыт</span><p>Требование к опыту участника от 5 лет</p></div>
+    <div class="card"><span class="tag bad">Ограничение</span><p>«Только / исключительно / строго» рядом с производителем, брендом, регионом</p></div>
+    <div class="card"><span class="tag warn">Оплата</span><p>100% предоплата или аванс</p></div>
+    <div class="card"><span class="tag">ГОСТ</span><p>Ссылка на ГОСТ без года редакции</p></div>
+  </div>
+</div></section>
+
+<section id="results"><div class="wrap">
+  <h2>Результаты анализа</h2>
+  <p class="lead">Восемь вкладок. Выберите вкладку, чтобы увидеть содержание и закрываемое требование.</p>
+  <div class="tabs" role="tablist" id="rtabs"></div>
+  <div class="panel" id="rpanel"></div>
+
+  <h3 style="margin:28px 0 10px">Пример матрицы «тема × заказчик»</h3>
+  <p class="lead" style="margin-bottom:10px">Иллюстрация: расхождения подсвечиваются, совпадения помечены зелёным.</p>
+  <div class="tw"><table>
+    <tr><th>Тема</th><th>Заказчик А</th><th>Заказчик Б</th><th>Заказчик В</th><th>Итог</th></tr>
+    <tr><td>Срок поставки</td><td class="diff">30 дней</td><td class="diff">45 дней</td><td class="diff">20 дней</td><td>Различие</td></tr>
+    <tr><td>Гарантия</td><td class="same">24 мес.</td><td class="same">24 мес.</td><td class="same">24 мес.</td><td>Общее</td></tr>
+    <tr><td>Оплата</td><td class="diff">100% аванс</td><td class="diff">30% аванс</td><td class="diff">по факту</td><td>Различие · риск</td></tr>
+    <tr><td>Стандарт</td><td class="same">ГОСТ 12345</td><td class="same">ГОСТ 12345</td><td>—</td><td>Уникальное</td></tr>
+  </table></div>
+</div></section>
+
+<section id="tz"><div class="wrap">
+  <h2>Проект ТЗ</h2>
+  <p class="lead">Единое ТЗ собирается потоково в Markdown: общие условия — как есть, по спорным пунктам — рекомендации, нарушения устраняются.</p>
+  <div class="grid g2">
+    <div class="card">
+      <h3>Структура документа</h3>
+      <ol style="margin:6px 0 0;padding-left:20px;font-size:14.5px;color:var(--muted)">
+        <li>Общие сведения</li><li>Предмет и объём</li><li>Технические требования</li><li>Качество и стандарты</li><li>Сроки и условия поставки</li><li>Гарантия</li><li>Приёмка</li><li>Требования к участнику</li><li>Оплата</li><li>Ответственность</li><li>Приложение: перечень решений заказчика</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Правила генерации</h3>
+      <p>Значения, которых нет в данных, помечаются <code>⟦…⟧</code>. Решения заказчика — <code>⟦ВЫБОР: А / Б⟧</code>. Выдумывать числа запрещено.</p>
+      <div class="chips" style="margin-top:12px"><span class="chip">Ручная правка</span><span class="chip">Повторная проверка</span><span class="chip">Экспорт .docx</span><span class="chip">Экспорт .md</span></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="arch"><div class="wrap">
+  <h2>Архитектура</h2>
+  <p class="lead">Без собственного сервера: всё работает в браузере внутри claude.ai.</p>
+  <div class="arch">
+    <div class="layer"><div class="lbl">Чтение файлов</div><div class="items"><span>pdf.js 3.11.174</span><span>mammoth 1.6.0</span><span>SheetJS (xlsx) 0.18.5</span><span>JSZip 3.10.1</span></div></div>
+    <div class="arrow">▼</div>
+    <div class="layer"><div class="lbl">Локальный анализ</div><div class="items"><span>Шинглы + инвертированный индекс</span><span>Регулярные выражения</span><span>Автосигналы</span></div></div>
+    <div class="arrow">▼</div>
+    <div class="layer"><div class="lbl">ИИ-анализ</div><div class="items"><span>capability <code>sample</code> (Claude)</span><span>Tier: default / complex</span><span>JSON-ответы</span><span>Кэш 5 мин</span></div></div>
+    <div class="arrow">▼</div>
+    <div class="layer"><div class="lbl">Экспорт</div><div class="items"><span>capability <code>downloads</code></span><span>.html</span><span>.csv</span><span>.md</span><span>.docx</span></div></div>
+  </div>
+
+  <h3 style="margin:28px 0 10px">Алгоритм поиска дублей</h3>
+  <div class="grid g2">
+    <ul class="algo">
+      <li>Текст → абзацы (от 50 знаков, ≥ 6 слов).</li>
+      <li>Для каждого абзаца — множество хэшей 4-словных шинглов.</li>
+      <li>Инвертированный индекс → кандидаты, коэффициент Жаккара.</li>
+      <li>Пары от 0,6 сохраняются; от 0,7 объединяются в кластеры (union-find).</li>
+      <li>Кластер из 2+ документов — повтор между заказчиками.</li>
+      <li>Пары в одном документе от 0,8 — внутренний дубль.</li>
+    </ul>
+    <div class="jac">
+      <div class="card"><h3>Порог сохранения пары: <b>0,6</b></h3><div class="meter"><i style="width:60%"></i></div></div>
+      <div class="card"><h3>Кластеризация: <b>0,7</b></h3><div class="meter"><i style="width:70%"></i></div></div>
+      <div class="card"><h3>Внутренний дубль: <b>0,8</b></h3><div class="meter"><i style="width:80%"></i></div></div>
+      <div class="card"><h3>«Формулировки различаются» при мин. сходстве &lt; <b>0,97</b></h3><div class="meter"><i style="width:97%"></i></div></div>
+    </div>
+  </div>
+
+  <h3 style="margin:28px 0 10px">Нефункциональные требования</h3>
+  <div class="tw"><table>
+    <tr><th>Область</th><th>Требование</th></tr>
+    <tr><td>Платформа</td><td>Одностраничное веб-приложение в claude.ai, без сервера</td></tr>
+    <tr><td>Конфиденциальность</td><td>Файлы читаются в браузере; в Claude уходит только извлечённый текст и только с разрешения</td></tr>
+    <tr><td>Стоимость</td><td>ИИ-вызовы тратят лимит пользователя; успешные ответы кэшируются на 5 минут</td></tr>
+    <tr><td>Производительность</td><td>Локальный анализ — доли секунды; полный анализ 10 файлов — несколько минут</td></tr>
+    <tr><td>Лимиты</td><td>Запрос ≤ 250 КБ; части по 38 000 знаков (до 3 на документ); данные сопоставления сокращаются</td></tr>
+    <tr><td>Отказоустойчивость</td><td>Ошибка документа или шага не блокирует остальные; без ИИ работают локальные проверки</td></tr>
+    <tr><td>Интерфейс</td><td>Русский язык, адаптивная вёрстка, светлая и тёмная темы</td></tr>
+    <tr><td>Безопасность вывода</td><td>Весь выводимый текст экранируется</td></tr>
+  </table></div>
+</div></section>
+
+<section id="risks"><div class="wrap">
+  <h2>Ограничения и риски</h2>
+  <p class="lead">Нажмите на риск, чтобы увидеть меры.</p>
+  <details><summary>⚠️ ИИ без интернета и актуальных редакций актов</summary><p><b>Влияние:</b> неверные ссылки на статьи, устаревшие нормы. <b>Меры:</b> предупреждения в интерфейсе, поле «достоверность», «сверить статью», обязательная проверка юристом.</p></details>
+  <details><summary>⚠️ Сканы и изображения не читаются</summary><p><b>Влияние:</b> часть документов выпадает. <b>Меры:</b> явное сообщение о причине; OCR — вне MVP.</p></details>
+  <details><summary>⚠️ Документы длиннее ~114 000 знаков</summary><p><b>Влияние:</b> анализируется только начало. <b>Меры:</b> пометка «часть текста» в сводке.</p></details>
+  <details><summary>⚠️ Большое число файлов</summary><p><b>Влияние:</b> время и расход лимита. <b>Меры:</b> параллелизм 2, сокращение данных, кэш, кнопка остановки.</p></details>
+  <details><summary>⚠️ Ограниченный набор автосигналов</summary><p><b>Влияние:</b> пропуск нарушений вне правил. <b>Меры:</b> сигналы дополняют ИИ, но не заменяют его.</p></details>
+  <details><summary>⚠️ Данные не сохраняются</summary><p><b>Влияние:</b> потеря результатов при закрытии. <b>Меры:</b> экспорт отчёта, матрицы и ТЗ.</p></details>
+  <details><summary>⚠️ Ошибки в отнесении к «общему» или «различию»</summary><p><b>Влияние:</b> неточности сопоставления. <b>Меры:</b> матрица и цитаты позволяют перепроверить вручную.</p></details>
+  <div class="card" style="margin-top:14px"><span class="tag warn">Статус проверки</span><p>Проверены на демо-данных: синтаксис, локальный поиск дублей, нормативных ссылок, автосигналов, XML для .docx. <b>Не тестировались на реальных документах:</b> ИИ-шаги, разбор PDF/DOCX/XLSX, скачивание файлов.</p></div>
+</div></section>
+
+<section id="accept"><div class="wrap">
+  <h2>Критерии приёмки</h2>
+  <p class="lead">Отметьте пункты по мере проверки — прогресс считается автоматически.</p>
+  <div class="card">
+    <div id="accList" style="display:grid;gap:8px"></div>
+    <div class="meter" style="height:12px;margin-top:14px"><i id="accBar" style="width:0%"></i></div>
+    <div id="accTxt" style="color:var(--muted);font-size:13.5px"></div>
+  </div>
+</div></section>
+
+<section id="road"><div class="wrap">
+  <h2>Дорожная карта после MVP</h2>
+  <div class="road">
+    <div class="card"><span class="tag bad">High</span><ul><li>OCR для сканов и изображений</li><li>Сохранение проектов между сессиями</li><li>Библиотека актуальных редакций НПА и стандартов</li></ul></div>
+    <div class="card"><span class="tag warn">Medium</span><ul><li>Шаблоны ТЗ (ГОСТ 34, 44-ФЗ/223-ФЗ, отраслевые)</li><li>Версионирование и сравнение редакций ТЗ</li><li>Командная работа: комментарии, согласование, роли</li><li>ZIP-архивы и пакетная обработка &gt;40 файлов</li></ul></div>
+    <div class="card"><span class="tag ok">Low</span><ul><li>Экспорт отчёта в .docx и .xlsx</li><li>Настраиваемые правила автосигналов</li><li>Поддержка старого формата .doc</li></ul></div>
+  </div>
+</div></section>
+
+<section id="gloss"><div class="wrap">
+  <h2>Глоссарий</h2>
+  <input class="search" id="gs" type="search" placeholder="Поиск по термину…">
+  <div class="tw"><table id="gt"></table></div>
+</div></section>
+</main>
+
+<footer><div class="wrap">PRD «ТендерАналитик» · версия 1.0 · визуализация документа PRD.md. Результаты анализа носят рекомендательный характер и не заменяют юридическое заключение.</div></footer>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  try{var t=localStorage.getItem('theme');if(t)root.setAttribute('data-theme',t)}catch(e){}
+  document.getElementById('theme').onclick=function(){
+    var dark=root.getAttribute('data-theme')==='dark'||(!root.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme:dark)').matches);
+    var n=dark?'light':'dark';root.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  };
+
+  var tabs=[
+    ['Сводка','—','KPI, главные риски, заметные различия, таблица документов со статусом.'],
+    ['Общие условия','R3','Совпадающие по смыслу требования, сгруппированные по категориям, с указанием документов.'],
+    ['Различия','R4','Темы с расхождениями, значения по каждому заказчику, рекомендация для единого ТЗ; уникальные требования.'],
+    ['Матрица','R3, R4','Таблица «тема × заказчик», подсветка расхождений, экспорт в CSV.'],
+    ['Нарушения','R5','Нарушения и риски от ИИ (тип, критичность, требование, норма, причина, исправление, достоверность) + автоматические сигналы.'],
+    ['Разночтения','R6','Расхождения между документами и противоречия внутри документов.'],
+    ['Дубли и повторы','R7','Общие текстовые блоки между документами (с пометкой «формулировки различаются»), дубли внутри документа, смысловые дубли от ИИ.'],
+    ['Нормы и стандарты','R5','Реестр ссылок (ГОСТ, СП, СанПиН, ТР ТС/ЕАЭС, ISO, ФЗ и др.) с привязкой к документам; пометка «без года».']
+  ];
+  var tb=document.getElementById('rtabs'),tp=document.getElementById('rpanel');
+  function show(i){
+    [].forEach.call(tb.children,function(b,j){b.setAttribute('aria-selected',j===i)});
+    var x=tabs[i];
+    tp.innerHTML='<h3></h3><p></p><span class="tag"></span>';
+    tp.querySelector('h3').textContent=x[0];
+    tp.querySelector('p').textContent=x[2];
+    tp.querySelector('.tag').textContent='Требование: '+x[1];
+  }
+  tabs.forEach(function(x,i){
+    var b=document.createElement('button');b.setAttribute('role','tab');b.textContent=x[0];
+    b.onclick=function(){show(i)};tb.appendChild(b);
+  });
+  show(0);
+
+  var acc=['Загружается и читается ≥10 файлов в разных форматах; нечитаемые помечены с причиной',
+    'Отдельно показаны общие условия и различия с привязкой к заказчикам',
+    'Матрица показывает значения каждого заказчика и подсвечивает расхождения',
+    'Нарушения содержат норму, обоснование, исправление, достоверность; есть предупреждение о юр. проверке',
+    'Показаны разночтения между документами и внутри них',
+    'Показаны дубли: между документами, внутри документа, смысловые',
+    'Формируется проект ТЗ, пригодный для редактирования и экспорта в .docx',
+    'При недоступности ИИ работают локальные проверки'];
+  var al=document.getElementById('accList');
+  function upd(){
+    var c=al.querySelectorAll('input:checked').length;
+    document.getElementById('accBar').style.width=(c/acc.length*100)+'%';
+    document.getElementById('accTxt').textContent='Выполнено '+c+' из '+acc.length;
+  }
+  acc.forEach(function(s,i){
+    var l=document.createElement('label');l.style.cssText='display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14.5px';
+    var c=document.createElement('input');c.type='checkbox';c.onchange=upd;c.style.marginTop='4px';
+    var sp=document.createElement('span');sp.textContent='A'+(i+1)+'. '+s;
+    l.appendChild(c);l.appendChild(sp);al.appendChild(l);
+  });
+  upd();
+
+  var gl=[['ТЗ','Техническое задание на закупку'],['Заказчик','Организация, чей документ загружен для анализа'],['Общее условие','Требование, совпадающее по смыслу у двух и более заказчиков'],['Различие','Тема, по которой значения у заказчиков расходятся'],['Разночтение','Разная формулировка одного понятия, неоднозначная формулировка или противоречие'],['Дубль','Повтор одного требования в разных документах или разделах'],['Автосигнал','Результат детерминированного правила без участия ИИ'],['Шингл','Последовательность из k слов, используется для сравнения текстов']];
+  var gt=document.getElementById('gt');
+  function rg(q){
+    gt.innerHTML='<tr><th>Термин</th><th>Значение</th></tr>';
+    gl.filter(function(r){return (r[0]+' '+r[1]).toLowerCase().indexOf(q.toLowerCase())>-1}).forEach(function(r){
+      var tr=gt.insertRow();tr.insertCell().innerHTML='<b></b>';tr.cells[0].firstChild.textContent=r[0];tr.insertCell().textContent=r[1];
+    });
+  }
+  rg('');
+  document.getElementById('gs').oninput=function(){rg(this.value)};
+})();
+</script>
+</body>
+</html>
